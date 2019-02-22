@@ -26,18 +26,36 @@ let app = http.createServer((req, res) => {
 app.listen(3000, '127.0.0.1');
 console.log('Node server running on port 3000');
 
+
+//**********************************************************
+
 // Test code here before setting up node server
 var words = ['read', 'dear', 'dare'];
 
-//Directly compare two words to find if they are Anagrams
-function isAnagram (wordOne, wordTwo) {
+// Take an array of words and a specific word. identify anagrams of specific wordOne
+function findAnagrams(word, words) {
+  var anagramArray = [];
+  for (i = 0; i < words.length; i++ ) {
+    if ( word === words[i] ) {
+      console.log('same word, skipping');
+      continue; //since a word cannot be an anagram of itself, we don't add it here
+    } else if ( isAnagram(word, words[i]) ) {
+      console.log('match found, adding');
+      anagramArray.push(words[i]);
+    }
+  }
+  return anagramArray;
+}
+
+//Directly compare two words to find if they are Anagrams, helper for findAnagrams function
+function isAnagram(wordOne, wordTwo) {
   // alphabatize both words for comparing
   orderedWordOne = alphabatize(wordOne);
   orderedWordTwo = alphabatize(wordTwo);
 
   //first check that the 2 words are the same length, otherwise they cannot be an anagram
   console.log(orderedWordOne, orderedWordTwo);
-  if( orderedWordOne === orderedWordTwo) {
+  if ( orderedWordOne === orderedWordTwo) {
     return true;
   } else {
     return false;
@@ -45,12 +63,11 @@ function isAnagram (wordOne, wordTwo) {
 }
 
 // Take a string and aplphabatize it for Anagram comparison, helper for isAnagram function
-function alphabatize (word) {
+function alphabatize(word) {
   var wordArray = word.split('');
   wordArray.sort();
   wordArray = wordArray.join('');
-  console.log(wordArray);
   return wordArray;
 }
 
-console.log(isAnagram('dear', 'dare'));
+console.log(findAnagrams('read', words));
