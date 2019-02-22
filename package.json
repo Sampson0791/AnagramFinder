@@ -1,0 +1,24 @@
+{
+  "name": "anagramfinder",
+  "version": "1.0.0",
+  "description": "an app that will identify anagrams in a text file",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sampson0791/AnagramFinder.git"
+  },
+  "author": "Sampson Miller",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sampson0791/AnagramFinder/issues"
+  },
+  "homepage": "https://github.com/Sampson0791/AnagramFinder#readme"
+}
