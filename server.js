@@ -30,17 +30,19 @@ console.log('Node server running on port 3000');
 //**********************************************************
 
 // Test code here before setting up node server
-var words = ['read', 'dear', 'dare'];
+// var words = ['read', 'dear', 'dare'];
+var fs = require("fs");
+
+var words = fs.readFileSync('dictionary.txt').toString().split('\n');
+console.log(words);
 
 // Take an array of words and a specific word. identify anagrams of specific wordOne
 function findAnagrams(word, words) {
   var anagramArray = [];
   for (i = 0; i < words.length; i++ ) {
     if ( word === words[i] ) {
-      console.log('same word, skipping');
       continue; //since a word cannot be an anagram of itself, we don't add it here
     } else if ( isAnagram(word, words[i]) ) {
-      console.log('match found, adding');
       anagramArray.push(words[i]);
     }
   }
@@ -54,7 +56,6 @@ function isAnagram(wordOne, wordTwo) {
   orderedWordTwo = alphabatize(wordTwo);
 
   //first check that the 2 words are the same length, otherwise they cannot be an anagram
-  console.log(orderedWordOne, orderedWordTwo);
   if ( orderedWordOne === orderedWordTwo) {
     return true;
   } else {
@@ -70,4 +71,4 @@ function alphabatize(word) {
   return wordArray;
 }
 
-console.log(findAnagrams('read', words));
+console.log(findAnagrams('hello', words));
