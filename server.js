@@ -1,31 +1,62 @@
 //server.js
 
-// var express = require('express'),
-//   app = express(),
-//   port = process.env.PORT || 3000,
-//   bodyParser = require('body-parser');
-//
-// app.listen(port);
-//
-// console.log('anagram RESTful API server started on: ' + port);
+const express = require('express');
+const bodyParser = require('body-parser');
+const MongoClient = require('mongodb').MongoClient;
 
-// app.js
+// const mongoose = require('mongoose');
+const uri = "mongodb+srv://sampson0791:<vx6vNwOYhUSEryYT>@ibottatest-60ihv.mongodb.net/test?retryWrites=true";
 
-const http = require('http');
+const app = express();
+const port = 3000;
 
-// Create an instance of the http server to handle HTTP requests
-let app = http.createServer((req, res) => {
-    // Set a response type of plain text for the response
-    res.writeHead(200, {'Content-Type': 'text/plain'});
+// MongoClient.connect('mongodb+srv://sampson0791:<password>@ibottatest-60ihv.mongodb.net/test?retryWrites=true', (err, database) => {
+//   if (err) return console.log(err);
+//   db = client.db('IbottaTest');// whatever your database name is
+//   app.listen(3000, () => {
+//     console.log('listening on 3000');
+//   })
+// })
 
-    // Send back a response and end the connection
-    res.end('Hello World!\n');
+app.use(bodyParser.urlencoded({extended: true}))
+// const http = require('http');
+
+const client = new MongoClient(uri, { useNewUrlParser: true });
+client.connect(err => {
+ const collection = client.db("test").collection("devices");
+ console.log('Mongodb connected');
+ // perform actions on the collection object
+ client.close();
+});
+
+// mongoose.connect(uri)
+//   .then(() => console.log('Mongodb connected'))
+//   .catch((err) => console.log(err));
+
+//Bind connection to error event (to get notification of connection errors)
+client.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+
+app.get('/anagrams/:word.json', (req, res) => {
+  // res.send('Hello World');
+})
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html')
+})
+
+app.post('/quotes', (req,res) => {
+  console.log(req.body);
+})
+
+app.listen(port, () => {
+  console.log('Live on port ' + port);
 });
 
 // Start the server on port 3000
-app.listen(3000, '127.0.0.1');
-console.log('Node server running on port 3000');
+// app.listen(3000, '127.0.0.1');
 
+// console.log('Node server running on port 3000');
 
 //**********************************************************
 
@@ -34,7 +65,6 @@ console.log('Node server running on port 3000');
 var fs = require("fs");
 
 var words = fs.readFileSync('dictionary.txt').toString().split('\n');
-console.log(words);
 
 // Take an array of words and a specific word. identify anagrams of specific wordOne
 function findAnagrams(word, words) {
@@ -71,4 +101,4 @@ function alphabatize(word) {
   return wordArray;
 }
 
-console.log(findAnagrams('hello', words));
+console.log(findAnagrams('read', words));
