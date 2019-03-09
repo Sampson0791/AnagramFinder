@@ -2,61 +2,38 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const MongoClient = require('mongodb').MongoClient;
-
-// const mongoose = require('mongoose');
-const uri = "mongodb+srv://sampson0791:<vx6vNwOYhUSEryYT>@ibottatest-60ihv.mongodb.net/test?retryWrites=true";
-
+// const MongoClient = require('mongodb').MongoClient;
+const mongoose = require('mongoose');
+const uri = "mongodb+srv://sampson0791:vx6vNwOYhUSEryYT@ibottatest-60ihv.mongodb.net/IbottaProject?retryWrites=true";
 const app = express();
 const port = 3000;
+const anagramRoutes = require('./api/routes/anagramRoutes.js'); // Imports routes
 
-// MongoClient.connect('mongodb+srv://sampson0791:<password>@ibottatest-60ihv.mongodb.net/test?retryWrites=true', (err, database) => {
-//   if (err) return console.log(err);
-//   db = client.db('IbottaTest');// whatever your database name is
-//   app.listen(3000, () => {
-//     console.log('listening on 3000');
-//   })
-// })
+app.use(bodyParser.json());
 
-app.use(bodyParser.urlencoded({extended: true}))
+app.use('/', anagramRoutes);
+
 // const http = require('http');
 
-const client = new MongoClient(uri, { useNewUrlParser: true });
-client.connect(err => {
- const collection = client.db("test").collection("devices");
- console.log('Mongodb connected');
- // perform actions on the collection object
- client.close();
-});
+// const client = new MongoClient(uri, { useNewUrlParser: true });
+// client.connect(err => {
+//  const collection = client.db("test").collection("devices");
+//  console.log('Mongodb connected');
+//  // perform actions on the collection object
+//  client.close();
+// });
 
-// mongoose.connect(uri)
-//   .then(() => console.log('Mongodb connected'))
-//   .catch((err) => console.log(err));
+// Connect to mongo db
+mongoose.connect(uri)
+ .then(() => console.log('Mongodb connected'))
+ .catch((err) => console.log(err));
 
 //Bind connection to error event (to get notification of connection errors)
-client.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-
-app.get('/anagrams/:word.json', (req, res) => {
-  // res.send('Hello World');
-})
-
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html')
-})
-
-app.post('/quotes', (req,res) => {
-  console.log(req.body);
-})
+// client.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.listen(port, () => {
   console.log('Live on port ' + port);
 });
-
-// Start the server on port 3000
-// app.listen(3000, '127.0.0.1');
-
-// console.log('Node server running on port 3000');
 
 //**********************************************************
 
