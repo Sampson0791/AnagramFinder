@@ -2,7 +2,6 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-// const MongoClient = require('mongodb').MongoClient;
 const mongoose = require('mongoose');
 const uri = "mongodb+srv://sampson0791:vx6vNwOYhUSEryYT@ibottatest-60ihv.mongodb.net/IbottaProject?retryWrites=true";
 const app = express();
@@ -10,18 +9,7 @@ const port = 3000;
 const anagramRoutes = require('./api/routes/anagramRoutes.js'); // Imports routes
 
 app.use(bodyParser.json());
-
 app.use('/', anagramRoutes);
-
-// const http = require('http');
-
-// const client = new MongoClient(uri, { useNewUrlParser: true });
-// client.connect(err => {
-//  const collection = client.db("test").collection("devices");
-//  console.log('Mongodb connected');
-//  // perform actions on the collection object
-//  client.close();
-// });
 
 // Connect to mongo db
 mongoose.connect(uri)
