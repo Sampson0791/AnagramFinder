@@ -1,11 +1,26 @@
+// anagramController.js
+
 const Word = require('../models/anagramModel.js');
 
-//Simple version, without validation or sanitation
-exports.findAnagrams = function (req, res) {
-    res.send('Greetings from the Test controller!');
+// @route GET /anagrams/:word.json
+// compares word in request to databse entries and returns anagrams
+// start by getting word entries
+exports.findAnagrams = function (req, res, next) {
+
+  Word.find().then(result => {
+    res.json(result);
+    console.log('result: ' + result);
+    const resultArray = result.map(x => x.word);
+    console.log('resultArray:' + resultArray);
+    const anagrams = findAnagrams(req.params.word, resultArray);
+    console.log(anagrams);
+  }, (reason) => {
+    console.log('rejected for ' + reason);
+  });
 };
 
-// POST request /words.json
+// @route POST /word.json
+// adds single word to database, used this to test post endpoint and deleting later
 exports.createWord = function (req, res) {
   const reqBody = req.body;
   // console.log(req);
@@ -15,6 +30,8 @@ exports.createWord = function (req, res) {
   newWord.save().then(result => res.json(result)).catch((err) => console.log(err));
 }
 
+// @route POST /words.json
+// adds JSON array of words to database
 exports.createWords = function (req, res) {
   const reqBody = req.body;
   const wordsArray = [];
@@ -26,9 +43,9 @@ exports.createWords = function (req, res) {
   }
   Word.insertMany(wordsArray).then(result => res.json(result)).catch((err) => console.log(err));
 }
-// '{ "words": ["read", "dear", "dare"] , }'
 
 // @route DELETE /words/:word.json
+// deletes single specified word in the request
 exports.deleteWord = function (req, res) {
   // Word.findByWord(req.params.word)
   //   .then(word => word,remove().then(() => res.json({success: true})))
@@ -36,6 +53,7 @@ exports.deleteWord = function (req, res) {
 };
 
 // @route DELETE /words.json
+// deletes all word entries from the database
 exports.deleteAllWords = function (req, res) {
   Word.deleteMany({}, function(err) {
     if(err) {
@@ -45,3 +63,45 @@ exports.deleteAllWords = function (req, res) {
     return res.status(200).send();
   });
 };
+
+
+// Anagram Finder functions, called in our GET request
+// Take an array of words and a specific word. identify anagrams of specific word
+function findAnagrams(word, words) {
+  var anagramArray = [];
+  for (i = 0; i < words.length; i++ ) {
+    if ( word === words[i] ) {
+      continue; //since a word cannot be an anagram of itself, we don't add it here
+    } else if ( isAnagram(word, words[i]) ) {
+      anagramArray.push(words[i]);
+    }
+  }
+  return anagramArray;
+}
+
+//Directly compare two words to find if they are Anagrams, helper for findAnagrams function
+function isAnagram(wordOne, wordTwo) {
+  //first check that the 2 words are the same length, otherwise they cannot be an anagram
+  if (wordOne.length != wordTwo.length) {
+    return false;
+  }
+
+  // alphabatize both words for comparing
+  orderedWordOne = alphabatize(wordOne);
+  orderedWordTwo = alphabatize(wordTwo);
+
+  // Once strings have been ordered alphabetically, simply compare if they are the same string
+  if (orderedWordOne === orderedWordTwo) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// Take a string and aplphabatize it for Anagram comparison, helper for isAnagram function
+function alphabatize(word) {
+  var wordArray = word.split('');
+  wordArray.sort();
+  wordArray = wordArray.join('');
+  return wordArray;
+}
