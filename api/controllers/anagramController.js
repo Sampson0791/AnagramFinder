@@ -9,11 +9,11 @@ exports.findAnagrams = function (req, res, next) {
 
   Word.find().then(result => {
     res.json(result);
-    console.log('result: ' + result);
     const resultArray = result.map(x => x.word);
-    console.log('resultArray:' + resultArray);
-    const anagrams = findAnagrams(req.params.word, resultArray);
+    const anagrams = findAnagrams(req.params.word, resultArray, req.params.count);
     console.log(anagrams);
+    const jsonAnagrams = {...anagrams};
+    console.log(JSON.stringify(jsonAnagrams));
   }, (reason) => {
     console.log('rejected for ' + reason);
   });
@@ -65,16 +65,22 @@ exports.deleteAllWords = function (req, res) {
 };
 
 
-// Anagram Finder functions, called in our GET request
+// Anagram Finder functions, called in GET request
 // Take an array of words and a specific word. identify anagrams of specific word
-function findAnagrams(word, words) {
+function findAnagrams(word, words, maxLength) {
   var anagramArray = [];
+  console.log('max Length: ' + maxLength);
   for (i = 0; i < words.length; i++ ) {
-    if ( word === words[i] ) {
-      continue; //since a word cannot be an anagram of itself, we don't add it here
+    if( anagramArray.length == maxLength ) {
+      console.log('entered break point');
+      return anagramArray;  
+    } else if ( word === words[i] ) {
+      //since a word cannot be an anagram of itself, we skip adding it
+      continue; 
     } else if ( isAnagram(word, words[i]) ) {
       anagramArray.push(words[i]);
     }
+    console.log(anagramArray.length);
   }
   return anagramArray;
 }
